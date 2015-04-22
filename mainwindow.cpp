@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     });
     m_asyncDB.updateMessage(1, QTime::currentTime().msecsSinceStartOfDay(), "I'm a programmer!", [this](void)
     {
+        // here can update UI
         qDebug() << "updateMessage Callback executed! mid = 1";
     });
 

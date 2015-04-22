@@ -103,32 +103,30 @@ public:
     }
     ~AsyncDataBase()
     {
-        if(m_sqlDatabase.open())
+        if(QSqlDatabase::database(m_connectionName, false).open())
         {
-            QSqlDatabase::cloneDatabase(m_sqlDatabase, m_connectionName);
-            QSqlDatabase::removeDatabase(m_connectionName);
+            QSqlDatabase::database(m_connectionName, false).close();
         }
+        QSqlDatabase::removeDatabase(m_connectionName);
 
         m_connectionName = QString::null;
-        m_dbFileName = QString::null;
     }
 
     void createDB( const QString &connectionName,
                    const QString &dbFileName )
     {
         m_connectionName = connectionName;
-        m_dbFileName     = dbFileName;
-        m_sqlDatabase    = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
-        m_sqlDatabase.setDatabaseName(m_dbFileName);
+        QSqlDatabase db  = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
+        db.setDatabaseName(dbFileName);
 
-        if(!m_sqlDatabase.open())
+        if(!db.open())
         {
-            qDebug() << "DB file name:" << m_dbFileName;
-            qDebug() << "Database Error:" << m_sqlDatabase.lastError().text();
+            qDebug() << "DB file name:" << dbFileName;
+            qDebug() << "Database Error:" << db.lastError().text();
             return;
         }
 
-        m_sqlDatabase.exec(QString("CREATE TABLE IF NOT EXISTS '%1' ("
+        db.exec(QString("CREATE TABLE IF NOT EXISTS '%1' ("
                         "mid BIGINT PRIMARY KEY NOT NULL,"
                         "stamp BIGINT NOT NULL,"
                         "content VARCHAR(128) NOT NULL"
@@ -140,7 +138,7 @@ public:
     void loadMessage(int id,
         std::function<void(const int, const qint64, const QString&)> handler = std::function<void(const int, const qint64, const QString&)>{})
     {
-        QSqlQuery query(m_sqlDatabase);
+        QSqlQuery query(QSqlDatabase::database(m_connectionName));
         query.prepare(QString("SELECT * FROM %1 WHERE mid = %2")
                       .arg("message")
                       .arg(id));
@@ -148,9 +146,6 @@ public:
         m_controller.asyncOperate(query, [handler](const QSqlQuery &res)
         {
             QSqlQuery result(res);
-
-
-
             while (result.next())
             {
                 int mid = result.value("mid").toInt();
@@ -168,7 +163,7 @@ public:
     void updateMessage(int id, qint64 stamp, QString content,
         std::function<void(void)> handler = std::function<void(void)>{})
     {
-        QSqlQuery query(m_sqlDatabase);
+        QSqlQuery query(QSqlDatabase::database(m_connectionName));
         query.prepare(QString("REPLACE INTO %1 (mid, stamp, content) VALUES ("
                               ":mid, :stamp, :content)")
                       .arg("message"));
@@ -190,7 +185,7 @@ public:
     void deleteMessage(int id,
         std::function<void(void)> handler = std::function<void(void)>{})
     {
-        QSqlQuery query(m_sqlDatabase);
+        QSqlQuery query(QSqlDatabase::database(m_connectionName));
         query.prepare(QString("DELETE FROM %1 WHERE mid = %2")
                       .arg("message")
                       .arg(id));
@@ -207,8 +202,6 @@ public:
 
 private:
     QString      m_connectionName;
-    QString      m_dbFileName;
-    QSqlDatabase m_sqlDatabase;
     Controller   m_controller;
 };
 #endif // ASYNC_DB_H

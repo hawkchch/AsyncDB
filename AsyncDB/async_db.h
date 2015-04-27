@@ -103,7 +103,7 @@ public:
     }
     ~AsyncDataBase()
     {
-        if(QSqlDatabase::database(m_connectionName, false).open())
+        if(QSqlDatabase::database(m_connectionName, false).isOpen())
         {
             QSqlDatabase::database(m_connectionName, false).close();
         }
@@ -112,7 +112,7 @@ public:
         m_connectionName = QString::null;
     }
 
-    void createDB( const QString &connectionName,
+    bool createDB( const QString &connectionName,
                    const QString &dbFileName )
     {
         m_connectionName = connectionName;
@@ -123,7 +123,7 @@ public:
         {
             qDebug() << "DB file name:" << dbFileName;
             qDebug() << "Database Error:" << db.lastError().text();
-            return;
+            return false;
         }
 
         db.exec(QString("CREATE TABLE IF NOT EXISTS '%1' ("
@@ -133,6 +133,8 @@ public:
                         ")").arg("message"));
 
         qDebug() << "DataBase_ThreadID:" << QThread::currentThreadId();
+
+        return true;
     }
 
     void loadMessage(int id,

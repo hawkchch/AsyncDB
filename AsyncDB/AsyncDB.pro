@@ -13,10 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    async_db2.cpp
 
 HEADERS  += mainwindow.h \
-    async_db.h
+    async_db.h \
+    async_db2.h
 
 FORMS    += mainwindow.ui
 

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "async_db.h"
+#include "async_db2.h"
 namespace Ui {
 class MainWindow;
 }
@@ -19,6 +20,7 @@ private:
     Ui::MainWindow *ui;
 
     AsyncDataBase m_asyncDB;
+    AsyncDataBase2 *m_asyncDB2;
 };
 
 #endif // MAINWINDOW_H

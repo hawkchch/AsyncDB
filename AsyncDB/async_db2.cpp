@@ -87,7 +87,7 @@ bool AsyncDataBase2::removeData(const Data &data)
     return true;
 }
 
-void AsyncDataBase2::appendData(const Data &data)
+void AsyncDataBase2::appendInsertData(const Data &data)
 {
     m_mutexDatas.lock();
     m_waitingForInsertDatas.push_back(data);

@@ -70,10 +70,10 @@ MainWindow::MainWindow(QWidget *parent) :
         m_asyncDB2->start();
         m_asyncDB2->createDB("Test2", "D:\\test2.db");
 
-        m_asyncDB2->appendData(Data(0, "Hello"));
-        m_asyncDB2->appendData(Data(1, "World"));
-        m_asyncDB2->appendData(Data(2, "!"));
-        m_asyncDB2->appendData(Data(3, "Haha"));
+        m_asyncDB2->appendInsertData(Data(0, "Hello"));
+        m_asyncDB2->appendInsertData(Data(1, "World"));
+        m_asyncDB2->appendInsertData(Data(2, "!"));
+        m_asyncDB2->appendInsertData(Data(3, "Haha"));
 
         m_asyncDB2->appendRemoveData(Data(1, "World"));
         m_asyncDB2->appendRemoveData(Data(3, "Haha"));

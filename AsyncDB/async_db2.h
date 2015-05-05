@@ -101,7 +101,7 @@ public:
 
     bool dbIsOpen();
 
-    void appendData(const Data& data);
+    void appendInsertData(const Data& data);
 
     void appendRemoveData(const Data& data);
 
